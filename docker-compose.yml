@@ -1,0 +1,37 @@
+version: '3'
+
+services:
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - web
+      - auth
+
+  web:
+    build: ./server
+    labels:
+      - "nginx.backend=true"
+    volumes:
+      - ./server:/server
+    ports:
+      - "8082:8082"
+    environment:
+      AUTH_HOST: "auth"
+      FLASK_DEBUG: "true"
+
+  auth:
+    build: ./auth
+    labels:
+      - "nginx.backend=true"
+    volumes:
+      - ./auth:/auth
+    ports:
+      - "5000:5000"
+    environment:
+      SERVER_HOST: "web"
+      FLASK_DEBUG: "true"
+      OAUTHLIB_INSECURE_TRANSPORT: "1"

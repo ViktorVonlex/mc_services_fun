@@ -27,15 +27,6 @@ def protected():
     else:
         # If the user is not authenticated, redirect to the OAuth microservice to obtain a token
         return flask.redirect(OAUTH_SERVICE_URL)
-        response = requests.get(OAUTH_SERVICE_URL, allow_redirects=True)
-        print(response.status_code)
-        if response.status_code == 200:
-            auth_url = response.json().get('auth_url')
-            return flask.redirect(auth_url)
-            # access_token = response.json().get('access_token')
-            # flask.session['access_token'] = access_token
-        else:
-            return 'Authentication failed. Please try again or login to access this page.'
 
 # Logout route to clear the session
 @app.route('/logout')
